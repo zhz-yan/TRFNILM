@@ -5,9 +5,6 @@ import json
 
 import numpy as np
 
-from load_feat import create_features
-import time
-import joblib
 
 from sklearn.model_selection import train_test_split
 from collections import Counter
