@@ -4,13 +4,12 @@ import os
 import json
 
 import numpy as np
-import psutil
 
 from load_feat import create_features
 import time
 import joblib
 
-from utils.data_generator import *
+from sklearn.model_selection import train_test_split
 from collections import Counter
 from sklearn.preprocessing import LabelEncoder
 from dataset.load_cooll_data import *
@@ -49,7 +48,6 @@ def sample_from_large_categories(Xt, yt, n_samples=1):
 def exp_case2_transfer(args, input_feature, label, dataset, house_label=None, amount_houses_test=1):
     classes = list(np.unique(label))
     num_class = len(classes)
-    process = psutil.Process()
 
     if dataset == "whited":
         data = generate_dataset_whited(label, input_feature)
