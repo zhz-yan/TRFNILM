@@ -14,7 +14,6 @@ from dataset.load_whited_data import *
 from sklearn.metrics import recall_score, precision_score, f1_score, accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from dataset.load_plaid_data import leave_one_house_out_plaid, split_tune_set, split_tune_set_percentage
-# from SER.ser import SER_RF
 from SER.WeightedRF import WeightedRandomForest
 
 
