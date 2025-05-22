@@ -12,3 +12,5 @@ pip install numpy
 
 ## Data
 The processed data can be found in 'src/data'.
+
+The functions for processing raw data can be found in 'src/dataset'.
