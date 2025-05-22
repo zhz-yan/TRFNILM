@@ -11,12 +11,12 @@ import matplotlib.pyplot as plt
 class PLAID(object):
 
     def __init__(self, path, progress=True, width=50, npts=10000, fs=30000, f0=60):
-        self.path = path  # 数据路径, "D:/datasets/nilm/plaid/PLAID/"
+        self.path = path  # "D:/datasets/nilm/plaid/PLAID/"
         self.progress = progress  # True
-        self.npts = npts  # 采样点, 10000
+        self.npts = npts  #  10000
         self.width = width
-        self.sampling_frequency = fs  # 采样率, 30 kHz
-        self.mains_frequency = f0  # 基波频率, 50 Hz
+        self.sampling_frequency = fs  #  30 kHz
+        self.mains_frequency = f0  #  50 Hz
         self.get_meta_parameters()  # Meta data
 
     def clean_meta(self, ist):
@@ -71,10 +71,10 @@ class PLAID(object):
         """
         return:
             data (dictionary):   key is the data_id, value is a current and voltage data. size = (1793,)
-            house_label (list):         把 self.households上的 house 转化为 house_id, 1-based
-            house_Ids(dictionary):      每个房屋(houses)在house_label的上的index, 0-based, size = (64,)
-            appliance_label (list):     把 self.appliance上的 appliance 转化为 appliance_id, 1-based
-            appliance_Ids (dictionary): 每种设备(appliance type)在appliance_label的上的index, 0-based, size = (12,)
+            house_label (list):         
+            house_Ids(dictionary), size = (64,)
+            appliance_label (list):   
+            appliance_Ids (dictionary): 
         """
         path = self.path + '2017/'  # csv file path
         last_offset = self.npts  # numbers of sampling points
@@ -115,13 +115,13 @@ class PLAID(object):
 
         for (ii, t) in enumerate(self.appliances):
             appliance_Ids[t] = [
-                i - 1 for i, j in enumerate(self.appliance_types, start=1) if j == t]  # 字典，每种设备在Types的上的索引, 0-based
-            appliance_label[appliance_Ids[t]] = ii  # 列表，把type上的设备名转化为appliance_id
-            Mapping[ii] = t  # 字典，appliance_id -> 设备 的映射
+                i - 1 for i, j in enumerate(self.appliance_types, start=1) if j == t]  
+            appliance_label[appliance_Ids[t]] = ii 
+            Mapping[ii] = t  
         for (ii, t) in enumerate(self.house):
             house_Ids[t] = [i - 1 for i,
-            j in enumerate(self.households, start=1) if j == t]  # 字典，每个house在Locs的上的索引, 0-based
-            house_label[house_Ids[t]] = ii + 1  # 列表，把Locs上的设备名转化为house_id, 1-based
+            j in enumerate(self.households, start=1) if j == t] 
+            house_label[house_Ids[t]] = ii + 1  
         print('number of different appliances: %d' % len(self.appliances))
         print('number of different households: %d' % len(self.house))
         return data, house_label, house_Ids, appliance_label, appliance_Ids
@@ -137,13 +137,13 @@ class PLAID(object):
 
         for (ii, t) in enumerate(self.appliances):
             appliance_Ids[t] = [
-                i - 1 for i, j in enumerate(self.appliance_types, start=1) if j == t]  # 字典，每种设备在Types的上的索引, 0-based
-            appliance_label[appliance_Ids[t]] = ii  # 列表，把type上的设备名转化为appliance_id
-            Mapping[ii] = t  # 字典，appliance_id -> 设备 的映射
+                i - 1 for i, j in enumerate(self.appliance_types, start=1) if j == t]  
+            appliance_label[appliance_Ids[t]] = ii  
+            Mapping[ii] = t 
         for (ii, t) in enumerate(self.house):
             house_Ids[t] = [i - 1 for i,
-            j in enumerate(self.households, start=1) if j == t]  # 字典，每个house在Locs的上的索引, 0-based
-            house_label[house_Ids[t]] = ii + 1  # 列表，把Locs上的设备名转化为house_id, 1-based
+            j in enumerate(self.households, start=1) if j == t]  
+            house_label[house_Ids[t]] = ii + 1  
         print('number of different appliances: %d' % len(self.appliances))
         print('number of different households: %d' % len(self.house))
         return house_label, house_Ids, appliance_label, appliance_Ids
@@ -166,17 +166,17 @@ class PLAID(object):
         rep_V = np.empty([n, NS])
         for i in range(n):
             ind = list(data)[i]  # 取dictionary的ke
-            tempI = np.sum(np.reshape(data[ind]['current'], [NP, NS]), 0) / NP  # 求一个周波的平均电流
-            tempV = np.sum(np.reshape(data[ind]['voltage'], [NP, NS]), 0) / NP  # 求一个周波的平均电压
+            tempI = np.sum(np.reshape(data[ind]['current'], [NP, NS]), 0) / NP  
+            tempV = np.sum(np.reshape(data[ind]['voltage'], [NP, NS]), 0) / NP  
             # align current to make all samples start from 0 and goes up
-            ix = np.argsort(np.abs(tempI))  # 经过abs, 按顺序找最小到最大值的位置
+            ix = np.argsort(np.abs(tempI))  
             j = 0
             while True:
                 if ix[j] < 499 and tempI[ix[j] + 1] > tempI[
-                    ix[j]]:  # tempI[ix[j]] 和 tempI[ix[j]+1] 均为正; 或 tempI[ix[j]]为负，tempI[ix[j]+1]为正
+                    ix[j]]: 
                     real_ix = ix[j]
                     break
-                else:  # tempI[ix[j]]为正，tempI[ix[j]+1]为负; 或tempI[ix[j]] 和 tempI[ix[j]+1] 均为负
+                else:  
                     j += 1
             rep_I[i,] = np.hstack([tempI[real_ix:], tempI[:real_ix]])
             rep_V[i,] = np.hstack([tempV[real_ix:], tempV[:real_ix]])
@@ -208,15 +208,12 @@ def leave_one_house_out_plaid(house_label, label, input_feature, amount_houses_t
 
     test_houses = random.sample(set(house_label), amount_houses_test)
 
-    # 构建训练集和测试集索引
     ix_train = [j for j in range(len(house_label)) if house_label[j] not in test_houses]
     ix_test = [j for j in range(len(house_label)) if house_label[j] in test_houses]
 
-    # 确保测试集的标签在训练集中存在
     ytrain = label[ix_train]
     ix_test = [j for j in ix_test if label[j] in ytrain]
 
-    # 获取训练集和测试集的特征和标签
     Xtrain, Xtest = input_feature[ix_train], input_feature[ix_test]
     ytrain, ytest = label[ix_train], label[ix_test]
     house_label_test = np.array(house_label)[ix_test]
@@ -233,26 +230,22 @@ def split_tune_set(X_test, y_test, house_label_test, k):
     remaining_y_test = []
     remaining_house_label_test = []
 
-    # 获取唯一的house和label组合
     unique_houses = np.unique(house_label_test)
 
     for house in unique_houses:
-        # 获取属于该house的样本索引
         house_indices = np.where(house_label_test == house)[0]
         house_X = X_test[house_indices]
         house_y = y_test[house_indices]
         house_labels = house_label_test[house_indices]
 
-        # 按类别分组
         unique_labels = np.unique(house_y)
         for label in unique_labels:
-            # 获取该house中属于该label的样本索引
+            
             label_indices = np.where(house_y == label)[0]
             label_X = house_X[label_indices]
             label_y = house_y[label_indices]
             label_house_labels = house_labels[label_indices]
 
-            # 如果样本数量小于k，全部取出；否则随机取k个
             if len(label_indices) <= k:
                 tune_set.extend(label_X)
                 tune_labels.extend(label_y)
@@ -263,13 +256,11 @@ def split_tune_set(X_test, y_test, house_label_test, k):
                 tune_labels.extend(label_y[selected_indices])
                 tune_house_labels.extend(label_house_labels[selected_indices])
 
-                # 其余的样本作为剩余
                 remaining_indices = [i for i in range(len(label_indices)) if i not in selected_indices]
                 remaining_X_test.extend(label_X[remaining_indices])
                 remaining_y_test.extend(label_y[remaining_indices])
                 remaining_house_label_test.extend(label_house_labels[remaining_indices])
 
-    # 转换为ndarray
     tune_set = np.array(tune_set)
     tune_labels = np.array(tune_labels)
     tune_house_labels = np.array(tune_house_labels)
@@ -285,12 +276,6 @@ def split_tune_set_percentage(X_test, y_test, house_label_test, percentage):
     """
     Split test set into tune set and remaining test set based on percentage.
 
-    Parameters:
-    - X_test: ndarray, test set features
-    - y_test: ndarray, test set labels
-    - house_label_test: ndarray, test set house labels
-    - percentage: float, percentage of samples to extract from each house
-
     Returns:
     - tune_X: ndarray, features of the tune set
     - tune_y: ndarray, labels of the tune set
@@ -305,27 +290,21 @@ def split_tune_set_percentage(X_test, y_test, house_label_test, percentage):
     unique_houses = np.unique(house_label_test)
 
     for house in unique_houses:
-        # 找到属于当前 house 的所有索引
         house_indices = np.where(house_label_test == house)[0]
 
-        # 计算 10% 的样本数量
         num_tune_samples = max(1, int(len(house_indices) * percentage))
 
-        # 随机选择 num_tune_samples 个索引作为 tune_set
         tune_indices = np.random.choice(house_indices, num_tune_samples, replace=False)
         remaining_indices = list(set(house_indices) - set(tune_indices))
 
-        # 添加到 tune_set
         tune_X.append(X_test[tune_indices])
         tune_y.append(y_test[tune_indices])
         tune_house_labels.append(house_label_test[tune_indices])
 
-        # 添加到 remaining_test_set
         remaining_X_test.append(X_test[remaining_indices])
         remaining_y_test.append(y_test[remaining_indices])
         remaining_house_labels.append(house_label_test[remaining_indices])
 
-    # 合并所有 house 的数据
     tune_X = np.vstack(tune_X)
     tune_y = np.concatenate(tune_y)
     tune_house_labels = np.concatenate(tune_house_labels)
