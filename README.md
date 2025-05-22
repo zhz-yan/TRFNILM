@@ -9,3 +9,6 @@ To get started quickly, please run demo `exp_2.py`.
 pip install scikit-learn
 pip install numpy
 ```
+
+## Data
+The processed data can be found in 'src/data'.
