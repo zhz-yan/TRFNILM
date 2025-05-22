@@ -142,7 +142,7 @@ def get_whited_feature(path_dir):
 
     label, data, scale_factor, mk, region = get_whited_data(path_dir)
     data = denormalization(data, scale_factor, mk)
-    current, voltage = get_trajectory(data)  # 求平均电流
+    current, voltage = get_trajectory(data)  
     # current, voltage, label = get_VI_trajectory(data, label, fs=44.1e3, f0=50)
 
     return current, voltage, label, region
@@ -173,17 +173,17 @@ def get_train_test_leave_out_whited(dataset, n=9):
     houses_ids = dict([(key, []) for key in range(n)])
 
     for name in wanted_appl:
-        ids = np.array(range(len(dataset[name]))) // 10  # 每一个app分配给哪个house
-        for i in np.unique(ids):                         # 第i个house
-            arr = list(range(n))                         # idx of houses
+        ids = np.array(range(len(dataset[name]))) // 10 
+        for i in np.unique(ids):                         
+            arr = list(range(n))                        
             np.random.shuffle(arr)
             j = 0
             while True:
-                if name in houses[arr[j]]:               # 选择某一个house，查看里面是否有设备 name
+                if name in houses[arr[j]]:               
                     j += 1
                 else:
-                    houses[arr[j]].append(name)         # 给house[arr[j]]添加设备name
-                    houses_ids[arr[j]].append(i)        # 设备name 对应的 ids
+                    houses[arr[j]].append(name)         
+                    houses_ids[arr[j]].append(i)        
                     break
 
     train_set = []
@@ -196,7 +196,7 @@ def get_train_test_leave_out_whited(dataset, n=9):
 
         test_names = [i + str(j) for (i, j) in zip(h, hi)]
         for name in list(dataset.keys()):                       # appliance_name
-            ids = np.array(range(len(dataset[name]))) // 10     # appliance的id(按house)
+            ids = np.array(range(len(dataset[name]))) // 10     
             for i in range(len(dataset[name])):
                 if name + str(ids[i]) in test_names:
                     if name not in test:
@@ -214,24 +214,11 @@ def get_train_test_leave_out_whited(dataset, n=9):
 
 
 def get_train_test_leave_out_whited_with_tune(dataset, n=9, k=3):
-    """
-    将数据按leave-k-house-out划分为训练集、测试集和微调集。
 
-    Arguments:
-        dataset {dict} -- 数据集，包含不同类别的用电负荷数据，每个类别是一个列表，列表包含了不同house的数据
-        n {int} -- 总的house数量 (默认值: 9)
-        k {int} -- 每个house的每个类别中用于fine-tune的样本数量 (默认值: 5)
-
-    Returns:
-        train_set {list: (n,)} -- 列表，每个元素是一个字典，包含每个house的训练数据
-        test_set {list: (n,)} -- 列表，每个元素是一个字典，包含每个house的测试数据
-        fine_tune_set {list: (n,)} -- 列表，每个元素是一个字典，包含每个house的fine-tune数据
-    """
 
     houses = dict([(key, []) for key in range(n)])
     houses_ids = dict([(key, []) for key in range(n)])
 
-    # 遍历所需的用电负荷类型，将每个类别的数据分配到不同的house
     for name in wanted_appl:
         ids = np.array(range(len(dataset[name]))) // 10
         for i in np.unique(ids):
@@ -269,14 +256,13 @@ def get_train_test_leave_out_whited_with_tune(dataset, n=9, k=3):
                         train[name] = []
                     train[name].append(dataset[name][i])
 
-        # 从测试集中抽取k个样本作为fine-tune数据
         for name, samples in test.items():
             if len(samples) >= k:
                 fine_tune[name] = samples[:k]
-                test[name] = samples[k:]  # 剩下的数据保留在测试集中
+                test[name] = samples[k:]  
             else:
-                fine_tune[name] = samples  # 如果不足k个，则全部加入fine-tune集中
-                test[name] = []  # 清空该类别的测试数据
+                fine_tune[name] = samples  
+                test[name] = []  
 
         test_set.append(test)
         train_set.append(train)
@@ -288,11 +274,6 @@ def get_train_test_leave_out_whited_with_tune(dataset, n=9, k=3):
 
 def get_train_test_data(train_set, test_set, idx=0):
     """ get train test data
-
-       Arguments:
-           train_set {list: (n,)} -- 列表里的每个元素为 test {dic},对应house i里的负荷的数据，用于测试
-           test_set {list: (n,)} --  列表里的每个元素为 train {dic}, 对应剩下n-1个house里的数据，用于训练
-           idx = {int} -- house index for testing
 
        Returns:
            train_X = {Tensor: (n_train,1,W,W)} -- training data
