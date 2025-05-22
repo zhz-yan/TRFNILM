@@ -3,33 +3,15 @@ from sklearn.utils import resample
 
 
 def extract_samples(X_train, y_train, X_test, y_test, new_app, k, j):
-    """
-    从 y_test 中提取类别为 k 的 k 个样本，从 X_train 中提取除类别 k 外的 j 个样本。
-
-    参数:
-        X_train (ndarray): 训练特征数据，形状为 (n_train_samples, n_features)
-        y_train (ndarray): 训练标签数据，形状为 (n_train_samples,)
-        X_test (ndarray): 测试特征数据，形状为 (n_test_samples, n_features)
-        y_test (ndarray): 测试标签数据，形状为 (n_test_samples,)
-        k (int): 从 y_test 中类别为 k 的样本数量
-        j (int): 从 X_train 中非类别 k 的样本数量
-
-    返回:
-        X_tune (ndarray): 提取的特征数据，形状为 (k + j, n_features)
-        y_tune (ndarray): 提取的标签数据，形状为 (k + j,)
-    """
-    # 从 y_test 中找到类别为 k 的样本索引
+    
     test_indices_k = np.where(y_test == new_app)[0]
 
-    # 检查是否有足够的类别 k 的样本，随机选择 k 个样本
     if len(test_indices_k) >= k:
         chosen_test_indices = np.random.choice(test_indices_k, k, replace=False)
     else:
         raise ValueError(f"y_test 中类别 {new_app} 的样本不足 {k} 个。")
 
-    # 获取所有类别
     unique_classes = np.unique(y_train)
-    # 排除类别 k
     classes_except_k = [cls for cls in unique_classes if cls != new_app]
 
     # 存储选取的样本
